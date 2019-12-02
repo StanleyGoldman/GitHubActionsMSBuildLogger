@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -6,8 +7,15 @@ using Xunit;
 
 namespace GitHubActionsMSBuildLogger.Tests
 {
-    public class DotNetTests : BuildTestsBase
+    public class MsBuildTests : BuildTestsBase
     {
+        private readonly string _msbuildExec;
+
+        public MsBuildTests()
+        {
+            _msbuildExec = Environment.GetEnvironmentVariable("GitHubActionsMSBuildLogger_MsBuildPath");
+            if (string.IsNullOrEmpty(_msbuildExec)) _msbuildExec = "msbuild";
+        }
 
         [Fact]
         public async Task TestSimpleProjectInfo()
@@ -74,13 +82,13 @@ namespace GitHubActionsMSBuildLogger.Tests
             }
         }
 
-
-        private async Task<ProcessResults> BuildAsync(string simpleProjectInfo)
+        private async Task<ProcessResults> BuildAsync(string project)
         {
             var loggerPath = GetLoggerPathOrThrow();
-            var slnPath = GetSolutionPathOrThrow(simpleProjectInfo);
+            var slnPath = GetSolutionPathOrThrow(project);
 
-            return await ProcessEx.RunAsync("dotnet", $"build {slnPath} /logger:GitHubActionsLogger,{loggerPath}")
+            return await ProcessEx
+                .RunAsync(_msbuildExec, $"/logger:GitHubActionsLogger,{loggerPath} {slnPath}")
                 .ConfigureAwait(false);
         }
     }
