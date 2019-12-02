@@ -5,13 +5,17 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout commit
+      uses: actions/checkout@v1
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
     - name: Build and Test
       run: |
+        git checkout -b master
+        git checkout -b $env:GITHUB_REF
+        git rev-parse HEAD
         .\build.ps1
         .\test.ps1
     - name: Upload Build Log
@@ -26,3 +30,9 @@ jobs:
       with:
         name: Reports
         path: reports
+    - name: Upload Binaries
+      if: always()
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Binaries
+        path: src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3
