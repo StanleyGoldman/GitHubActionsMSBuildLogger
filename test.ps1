@@ -10,7 +10,7 @@ function test {
 
 	Write-Host "**** Testing $project ****"
 
-	dotnet vstest src\$project\bin\Release\netcoreapp3.0\publish\$project.dll `
+	dotnet vstest src\$project\bin\Release\netcoreapp3.0\$project.dll `
 		--logger:"trx;LogFileName=$project.trx" `
 		--ResultsDirectory:reports `
     
