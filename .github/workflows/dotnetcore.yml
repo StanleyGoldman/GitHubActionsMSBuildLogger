@@ -17,6 +17,9 @@ jobs:
         git checkout -b $env:GITHUB_REF
         git rev-parse HEAD
         .\build.ps1
+        $env:GitHubActionsMSBuildLogger_LoggerPath = "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll"
+        $env:GitHubActionsMSBuildLogger_TestResourcePath = "$pwd\test-resources"
+        $env:GitHubActionsMSBuildLogger_MsBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
         .\test.ps1
     - name: Upload Build Log
       if: always()

@@ -1,14 +1,86 @@
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using RunProcessAsTask;
 using Xunit;
 
 namespace GitHubActionsMSBuildLogger.Tests
 {
-    public class DotNetTests
+    public class DotNetTests : BuildTestsBase
     {
+
         [Fact]
-        public async Task Test1()
+        public async Task TestSimpleProjectInfo()
         {
-            var processResults = await RunProcessAsTask.ProcessEx.RunAsync("dotnet")
+            using var processResults = await BuildAsync("simple-project-info")
+                .ConfigureAwait(false);
+
+            using (new AssertionScope())
+            {
+                processResults.ExitCode.Should().Be(0);
+                processResults.StandardOutput.Should().Contain("Hello World");
+            }
+        }
+
+        [Fact]
+        public async Task TestSimpleProjectWarning()
+        {
+            using var processResults = await BuildAsync("simple-project-warning")
+                .ConfigureAwait(false);
+
+            using (new AssertionScope())
+            {
+                processResults.ExitCode.Should().Be(0);
+                processResults.StandardOutput.Should().Contain("Hello World");
+            }
+        }
+
+        [Fact]
+        public async Task TestSimpleProjectError()
+        {
+            using var processResults = await BuildAsync("simple-project-error")
+                .ConfigureAwait(false);
+
+            using (new AssertionScope())
+            {
+                processResults.ExitCode.Should().Be(1);
+                processResults.StandardOutput.Should().Contain("Hello World");
+            }
+        }
+
+        [Fact]
+        public async Task TestRoslynator()
+        {
+            using var processResults = await BuildAsync("roslynator")
+                .ConfigureAwait(false);
+
+            using (new AssertionScope())
+            {
+                processResults.ExitCode.Should().Be(1);
+                processResults.StandardOutput.Should().Contain("Hello World");
+            }
+        }
+
+        [Fact]
+        public async Task TestCodeAnalysis()
+        {
+            using var processResults = await BuildAsync("codeanalysis")
+                .ConfigureAwait(false);
+
+            using (new AssertionScope())
+            {
+                processResults.ExitCode.Should().Be(0);
+                processResults.StandardOutput.Should().Contain("Hello World");
+            }
+        }
+
+
+        private async Task<ProcessResults> BuildAsync(string simpleProjectInfo)
+        {
+            var loggerPath = GetLoggerPathOrThrow();
+            var slnPath = GetSolutionPathOrThrow(simpleProjectInfo);
+
+            return await ProcessEx.RunAsync("dotnet", $"build {slnPath} /logger:GitHubActionsLogger,{loggerPath}")
                 .ConfigureAwait(false);
         }
     }

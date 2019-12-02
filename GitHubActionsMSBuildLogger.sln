@@ -6,11 +6,15 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHubActionsMSBuildLogger", "src\GitHubActionsMSBuildLogger\GitHubActionsMSBuildLogger.csproj", "{024AF48E-FC04-4F54-9608-C7FAF2C2AF98}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHubActionsMSBuildLogger.Tests", "src\GitHubActionsMSBuildLogger.Tests\GitHubActionsMSBuildLogger.Tests.csproj", "{B78E1821-9E53-413B-BE9A-4B8369014CD7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{024AF48E-FC04-4F54-9608-C7FAF2C2AF98} = {024AF48E-FC04-4F54-9608-C7FAF2C2AF98}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9246B2CC-3426-4C25-B255-AD7A609AC5D5}"
 	ProjectSection(SolutionItems) = preProject
 		build.ps1 = build.ps1
 		clean.ps1 = clean.ps1
+		GitHubActionsMSBuildLogger.sln.DotSettings = GitHubActionsMSBuildLogger.sln.DotSettings
 		GitVersion.yml = GitVersion.yml
 		test.ps1 = test.ps1
 	EndProjectSection
