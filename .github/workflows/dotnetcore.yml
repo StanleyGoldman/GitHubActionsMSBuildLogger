@@ -1,0 +1,28 @@
+name: Build and Test
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+    - name: Build and Test
+      run: |
+        .\build.ps1
+        .\test.ps1
+    - name: Upload Build Log
+      if: always()
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Build
+        path: build.log
+    - name: Upload Reports
+      if: always()
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Reports
+        path: reports
