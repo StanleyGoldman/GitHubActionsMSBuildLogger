@@ -28,10 +28,10 @@ namespace GitHubActionsMSBuildLogger.Tests
             var loggerPath = Environment.GetEnvironmentVariable(variable);
             string.IsNullOrWhiteSpace(loggerPath)
                 .Should()
-                .BeFalse($"Environment Variable '{variable}' should be set");
+                .BeFalse($"environment variable '{variable}' should be set");
 
             var exists = File.Exists(loggerPath);
-            exists.Should().BeTrue($"Logger '{loggerPath}' should exist");
+            exists.Should().BeTrue($"logger file '{loggerPath}' should exist");
 
             var fileInfo = new FileInfo(loggerPath);
             var targetLoggerPath = Path.Combine(_targetPath, fileInfo.Name);
@@ -48,11 +48,11 @@ namespace GitHubActionsMSBuildLogger.Tests
 
             string.IsNullOrWhiteSpace(testResourcePath)
                 .Should()
-                .BeFalse($"Environment Variable '{variable}' should be set");
+                .BeFalse($"environment variable '{variable}' should be set");
 
             var solutionPath = Path.Join(testResourcePath, project);
             var exists = Directory.Exists(solutionPath);
-            exists.Should().BeTrue($"Solution '{solutionPath}' should exist");
+            exists.Should().BeTrue($"solution file '{solutionPath}' should exist");
 
             CopyFiles(solutionPath, _targetPath);
 
