@@ -7,19 +7,19 @@ namespace GitHubActionsMSBuildLogger.Tests
 {
     public abstract class BuildTestsBase : IDisposable
     {
-        private readonly string _targetPath;
+        protected readonly string TargetPath;
 
         protected BuildTestsBase()
         {
-            _targetPath = Path.Combine(Path.GetTempPath(), "GitHubActionsMSBuildLogger.Tests",
+            TargetPath = Path.Combine(Path.GetTempPath(), "GitHubActionsMSBuildLogger.Tests",
                 Guid.NewGuid().ToString());
 
-            Directory.CreateDirectory(_targetPath);
+            Directory.CreateDirectory(TargetPath);
         }
 
         public void Dispose()
         {
-            Directory.Delete(_targetPath, true);
+            Directory.Delete(TargetPath, true);
         }
 
         protected string GetLoggerPathOrThrow()
@@ -34,7 +34,7 @@ namespace GitHubActionsMSBuildLogger.Tests
             exists.Should().BeTrue($"logger file '{loggerPath}' should exist");
 
             var fileInfo = new FileInfo(loggerPath);
-            var targetLoggerPath = Path.Combine(_targetPath, fileInfo.Name);
+            var targetLoggerPath = Path.Combine(TargetPath, fileInfo.Name);
 
             File.Copy(loggerPath, targetLoggerPath);
 
@@ -54,9 +54,9 @@ namespace GitHubActionsMSBuildLogger.Tests
             var exists = Directory.Exists(solutionPath);
             exists.Should().BeTrue($"solution file '{solutionPath}' should exist");
 
-            CopyFiles(solutionPath, _targetPath);
+            CopyFiles(solutionPath, TargetPath);
 
-            return Path.Combine(_targetPath, "TestConsoleApp1.sln");
+            return Path.Combine(TargetPath, "TestConsoleApp1.sln");
         }
 
         private void CopyFiles(string sourcePath, string destinationPath)
