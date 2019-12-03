@@ -11,9 +11,6 @@ jobs:
       uses: actions/setup-dotnet@master
       with:
         dotnet-version: 3.0.100
-        source-url: https://api.nuget.org/v3/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
     - name: Build and Test
       run: |
         git checkout master
@@ -26,7 +23,7 @@ jobs:
         $env:GitHubActionsMSBuildLogger_MsBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
         .\test.ps1
     - name: Publish the package to GPR
-      run: dotnet nuget push src\GitHubActionsMSBuildLogger\bin\Release\*.nupkg
+      run: dotnet nuget push src\GitHubActionsMSBuildLogger\bin\Release\*.nupkg -k ${{secrets.NUGET_TOKEN}}
     - name: Upload Build Log
       if: always()
       uses: actions/upload-artifact@v1.0.0
