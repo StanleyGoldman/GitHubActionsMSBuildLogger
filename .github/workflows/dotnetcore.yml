@@ -13,7 +13,7 @@ jobs:
         dotnet-version: 3.0.100
         source-url: https://api.nuget.org/v3/index.json
       env:
-        NUGET_AUTH_TOKEN: ${{secrets.PackageToken}}
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_TOKEN}}
     - name: Build and Test
       run: |
         git checkout master
