@@ -5,6 +5,8 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>GitHubActionsMSBuildLogger</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>	
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>	
     <RepositoryUrl>https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger</RepositoryUrl>
     <PackageProjectUrl>https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
