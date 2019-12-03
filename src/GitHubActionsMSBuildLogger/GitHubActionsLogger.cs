@@ -47,6 +47,7 @@ namespace GitHubActionsMSBuildLogger
                 string message;
                 string code;
                 string level;
+
                 if (buildWarning != null)
                 {
                     level = "warning";
