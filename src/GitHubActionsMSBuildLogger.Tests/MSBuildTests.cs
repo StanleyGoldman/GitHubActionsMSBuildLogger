@@ -92,7 +92,7 @@ namespace GitHubActionsMSBuildLogger.Tests
             {
                 processResults.ExitCode.Should().Be(1);
                 processResults.StandardOutput.Should()
-                    .Contain("::error file=TestConsoleApp1/Program.cs,line=13,col=0::; expected");
+                    .Contain("::error file=TestConsoleApp1/Program.cs,line=13,col=0::CS1002 ; expected");
             }
         }
 
@@ -132,7 +132,7 @@ namespace GitHubActionsMSBuildLogger.Tests
                 processResults.ExitCode.Should().Be(0);
                 processResults.StandardOutput.Should()
                     .Contain(
-                        "::warning file=TestConsoleApp1/Program.cs,line=13,col=0::The variable 'hello' is assigned but its value is never used");
+                        "::warning file=TestConsoleApp1/Program.cs,line=13,col=0::CS0219 The variable 'hello' is assigned but its value is never used");
             }
         }
     }

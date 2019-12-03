@@ -9,19 +9,27 @@ namespace GitHubActionsMSBuildLogger
 {
     public class GitHubActionsLogger : Logger
     {
+        private Action<string> _output;
         public bool IsGitHubActionRunner => !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GITHUB_ACTION"));
         public string Workspace => Environment.GetEnvironmentVariable("GITHUB_WORKSPACE");
-
+        
         public override void Initialize(IEventSource eventSource)
         {
+            if (eventSource == null)
+                throw new ArgumentNullException(nameof(eventSource));
+
+            var debugEnvVariable = Environment.GetEnvironmentVariable("GitHubActionsLogger_Debug");
+            var isDebug =!(string.IsNullOrWhiteSpace(debugEnvVariable) || debugEnvVariable == "0" || debugEnvVariable.Equals("false", StringComparison.CurrentCultureIgnoreCase));
+            _output = isDebug
+                ? (Action<string>) (s => Console.WriteLine($"GitHubActionsLogger Debug: '{s}'"))
+                : _ => { };
+
             if (!IsGitHubActionRunner)
             {
+                _output("Not in GitHub Actions; Disabling");
                 return;
             }
 
-            eventSource.MessageRaised += (sender, args) =>
-            {
-            };
             eventSource.WarningRaised += (sender, args) => ProcessRecord(args);
             eventSource.ErrorRaised += (sender, args) => ProcessRecord(args);
         }
@@ -31,7 +39,6 @@ namespace GitHubActionsMSBuildLogger
             try
             {
                 int lineNumber;
-                int endLineNumber;
 
                 var buildWarning = recordArgs as BuildWarningEventArgs;
                 var buildError = recordArgs as BuildErrorEventArgs;
@@ -84,12 +91,14 @@ namespace GitHubActionsMSBuildLogger
                 }
 
                 var filePath = GetFilePath(projectFile ?? file, file);
-                var title = $"{code}: {filePath}({lineNumber})";
 
-                Console.WriteLine($"::{level} file={filePath},line={lineNumber},col={0}::{message}");
+                _output($"{level} - file={filePath},line={lineNumber},col={0} - {code} {message}");
+
+                Console.WriteLine($"::{level} file={filePath},line={lineNumber},col={0}::{code} {message}");
             }
             catch (Exception e)
             {
+                _output($"Error Caught: {e}");
             }
         }
 
