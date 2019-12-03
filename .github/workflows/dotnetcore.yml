@@ -23,7 +23,7 @@ jobs:
         $env:GitHubActionsMSBuildLogger_MsBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
         .\test.ps1
     - name: Publish to NuGet
-      run: dotnet nuget push src\GitHubActionsMSBuildLogger\bin\Release\*.nupkg -k ${{secrets.NUGET_TOKEN}}
+      run: dotnet nuget push src\GitHubActionsMSBuildLogger\bin\Release\*.nupkg -k ${{secrets.NUGET_TOKEN}} -s https://api.nuget.org/v3/index.json
     - name: Upload Build Log
       if: always()
       uses: actions/upload-artifact@v1.0.0
