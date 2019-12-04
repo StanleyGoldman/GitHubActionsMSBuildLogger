@@ -1,7 +1,10 @@
 using System;
 using System.IO;
+using System.Linq;
 using FluentAssertions;
+using RunProcessAsTask;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GitHubActionsMSBuildLogger.Tests
 {
@@ -72,6 +75,23 @@ namespace GitHubActionsMSBuildLogger.Tests
             foreach (var newPath in Directory.GetFiles(sourcePath, "*.*",
                 SearchOption.AllDirectories))
                 File.Copy(newPath, newPath.Replace(sourcePath, destinationPath), true);
+        }
+
+        protected (string[] warnings, string[] errors) OutputResults(ProcessResults processResults, ITestOutputHelper output)
+        {
+            var buildOutput = string.Join(Environment.NewLine, processResults.StandardOutput);
+            var errorOutput = string.Join(Environment.NewLine, processResults.StandardError);
+
+            output.WriteLine($"STDOUT:{Environment.NewLine}{buildOutput}");
+            output.WriteLine($"STDERR:{Environment.NewLine}{errorOutput}");
+
+            var warnings = processResults.StandardOutput.Where(s => s.StartsWith("::warning"))
+                .ToArray();
+
+            var errors = processResults.StandardOutput.Where(s => s.StartsWith("::error"))
+                .ToArray();
+
+            return (warnings, errors);
         }
     }
 }
