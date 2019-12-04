@@ -24,6 +24,8 @@ namespace GitHubActionsMSBuildLogger
                 ? (Action<string>) (s => Console.WriteLine($"GitHubActionsLogger Debug: '{s}'"))
                 : _ => { };
 
+            _output("Enabled");
+
             if (!IsGitHubActionRunner)
             {
                 _output("Not in GitHub Actions; Disabling");
