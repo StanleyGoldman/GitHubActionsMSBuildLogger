@@ -30,7 +30,7 @@ jobs:
         name: Build
         path: build.log
     - name: Upload Reports
-      if: always()
+      if: always() && startsWith(github.ref, 'refs/heads')
       uses: actions/upload-artifact@v1.0.0
       with:
         name: Reports
