@@ -67,7 +67,7 @@ jobs:
     - name: Update setup project
       if: success() && startsWith(github.ref, 'refs/tags')
       run: |
-        cp -f "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll" setup-GitHubActionsMSBuildLogger\
+        cp -Force "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll" setup-GitHubActionsMSBuildLogger\
         cd setup-GitHubActionsMSBuildLogger\
         git add -A
         git commit -m "Update to v$env.GitVersion_MajorMinorPatch"
