@@ -62,21 +62,14 @@ jobs:
       with:
         repository: 'StanleyGoldman/setup-GitHubActionsMSBuildLogger'
         ref: 'master'
-        path: '../setup-GitHubActionsMSBuildLogger'
+        path: 'setup-GitHubActionsMSBuildLogger'
         lfs: 'true'
     - name: Update setup project
       if: success() && startsWith(github.ref, 'refs/tags')
       run: |
-        cp -f "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll" ..\setup-GitHubActionsMSBuildLogger\
-        cd ..\setup-GitHubActionsMSBuildLogger\
+        cp -f "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll" setup-GitHubActionsMSBuildLogger\
+        cd setup-GitHubActionsMSBuildLogger\
         git add -A
         git commit -m "Update to v$env.GitVersion_MajorMinorPatch"
-    - name: GitHub Push
-      if: success() && startsWith(github.ref, 'refs/tags')
-      uses: ad-m/github-push-action@v0.5.0
-      with:
-        github_token: ${{ secrets.GH_TOKEN }}
-        repository: 'StanleyGoldman/setup-GitHubActionsMSBuildLogger'
-        branch: 'master'
-        directory: '../setup-GitHubActionsMSBuildLogger'
-        
+        git tag "v$env.GitVersion_MajorMinorPatch"
+        git push --tags origin master
