@@ -47,7 +47,8 @@ jobs:
       with:
         repo-token: "${{ secrets.GH_TOKEN }}"
         tag: "${{ format('v{0}', env.GitVersion_MajorMinorPatch) }}"
-    - name: Create a Release        
+    - name: Create a Release 
+      id: create_release       
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       uses: actions/create-release@v1
@@ -56,6 +57,16 @@ jobs:
         tag_name: "${{ format('v{0}', env.GitVersion_MajorMinorPatch) }}"
         release_name: "${{ format('v{0}', env.GitVersion_MajorMinorPatch) }}"
         body: "${{ format('v{0}', env.GitVersion_MajorMinorPatch) }}"
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: "src/GitHubActionsMSBuildLogger/bin/Release/netstandard1.3/GitHubActionsMSBuildLogger.dll"
+        asset_name: GitHubActionsMSBuildLogger.dll
+        asset_content_type: application/x-msdownload
     - name: Checkout setup project
       uses: actions/checkout@v2-beta
       if: success() && startsWith(github.ref, 'refs/tags')
