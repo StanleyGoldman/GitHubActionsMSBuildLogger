@@ -85,6 +85,6 @@ jobs:
         cp -Force "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll" setup-GitHubActionsMSBuildLogger\
         cd setup-GitHubActionsMSBuildLogger\
         git add -A
-        git commit -m "Update to v$env.GitVersion_MajorMinorPatch"
+        git commit -m "Update to v$env:GitVersion_MajorMinorPatch"
         git tag "v$env.GitVersion_MajorMinorPatch"
-        git push --tags origin master
+        git push --tags origin master 2>&1
