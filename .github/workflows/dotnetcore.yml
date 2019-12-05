@@ -6,7 +6,7 @@ jobs:
     runs-on: windows-latest
     env:
       GitHubActionsLogger_Debug: True
-      GitHubActionsMSBuildLogger_MsBuildPath: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+      GitHubActionsMSBuildLogger_MsBuildPath: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe
     steps:
     - name: Checkout commit
       uses: actions/checkout@v1
