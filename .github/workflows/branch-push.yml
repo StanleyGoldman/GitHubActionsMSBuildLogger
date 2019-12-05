@@ -46,4 +46,4 @@ jobs:
       if: success() && github.ref != '/refs/heads/master'
       with:
         repo-token: "${{ secrets.GH_TOKEN }}"
-        tag: "${{ format('v{0}', env.GitVersion_SemVer) }}"
+        tag: "${{ format('v{0}', env.GitVersion_MajorMinorPatch) }}"
