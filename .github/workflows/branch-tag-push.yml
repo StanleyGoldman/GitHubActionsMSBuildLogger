@@ -1,0 +1,125 @@
+name: Build and Test
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      GitHubActionsLogger_Debug: True
+      GitHubActionsMSBuildLogger_MsBuildPath: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe
+      GIT_REDIRECT_STDERR: 2>&1
+    steps:
+    - name: Checkout commit
+      uses: actions/checkout@v2-beta
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        fetch-depth: '0'
+    - name: Check if tagged master commit
+      if: github.ref == 'refs/heads/master'
+      run: |
+        git fetch --tags
+        $cmd = "git describe --tags --exact-match HEAD;$?"
+        $result = Invoke-Expression $cmd
+        if (-not($result -like "*fatal*")) {
+          echo "::set-env name=SKIP_BUILD::true"
+        }
+    - name: Setup .NET Core
+      if: env.SKIP_BUILD != 'true'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+    - name: Setup GitHubActionsMSBuildLogger
+      if: env.SKIP_BUILD != 'true'
+      uses: StanleyGoldman/setup-GitHubActionsMSBuildLogger@master
+    - name: Prep Tag Build
+      if: startsWith(github.ref, 'refs/tags')
+      run: |
+        git checkout -b master
+    - name: Build
+      if: env.SKIP_BUILD != 'true'
+      run: |
+        dotnet build -c Release .\GitHubActionsMSBuildLogger.sln -v normal -fl -flp:logfile=build.log -flp:verbosity=detailed /logger:GitHubActionsLogger,..\GitHubActionsMSBuildLogger.dll
+    - name: Test
+      if: success() && startsWith(github.ref, 'refs/heads') && env.SKIP_BUILD != 'true'
+      run: |
+        $env:GitHubActionsMSBuildLogger_LoggerPath = "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll"
+        $env:GitHubActionsMSBuildLogger_TestResourcePath = "$pwd\test-resources"
+        .\test.ps1
+    - name: Upload Build Log
+      if: always() && env.SKIP_BUILD != 'true'
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Build
+        path: build.log
+    - name: Upload Reports
+      if: always() && startsWith(github.ref, 'refs/heads') && env.SKIP_BUILD != 'true'
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Reports
+        path: reports
+    - name: Upload Binaries
+      if: always() && env.SKIP_BUILD != 'true'
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Binaries
+        path: src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3
+    - name: Update changelog, commit, tag and push
+      if: success() && github.ref == 'refs/heads/master' && env.SKIP_BUILD != 'true'
+      run: |
+        git config --global user.email "StanleyGoldman@users.noreply.github.com"
+        git config --global user.name "Stanley Goldman"
+        git fetch --tags
+        .\lib\git-chglog.exe -o CHANGELOG.md --next-tag v$env:GitVersion_MajorMinorPatch
+        git add -A
+        git commit -m "Update Changelog"
+        git tag "v$env:GitVersion_MajorMinorPatch"
+        git push --tags origin master
+    - name: Get Changelog for release
+      if: success() && startsWith(github.ref, 'refs/tags')
+      run: |
+        git fetch --tags
+        .\lib\git-chglog.exe -o CHANGELOG.md v$env:GitVersion_MajorMinorPatch
+        $GIT_CHANGELOG = (([IO.File]::ReadAllText("$pwd\CHANGELOG.md")))
+        echo $GIT_CHANGELOG
+        $GIT_CHANGELOG = $GIT_CHANGELOG -replace "\r\n","%0A" -replace "\n","%0A"
+        echo "::set-env name=GIT_CHANGELOG::$GIT_CHANGELOG"
+    - name: Create a Release 
+      id: create_release       
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      uses: actions/create-release@master
+      if: success() && startsWith(github.ref, 'refs/tags')
+      with:
+        tag_name: "${{ format('v{0}', env.GitVersion_MajorMinorPatch) }}"
+        release_name: "${{ format('v{0}', env.GitVersion_MajorMinorPatch) }}"
+        body: "${{ env.GIT_CHANGELOG }}"
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1.0.1
+      if: success() && startsWith(github.ref, 'refs/tags')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: "src/GitHubActionsMSBuildLogger/bin/Release/netstandard1.3/GitHubActionsMSBuildLogger.dll"
+        asset_name: GitHubActionsMSBuildLogger.dll
+        asset_content_type: application/x-msdownload
+    - name: Checkout setup project
+      uses: actions/checkout@v2-beta
+      if: success() && startsWith(github.ref, 'refs/tags')
+      with:
+        repository: 'StanleyGoldman/setup-GitHubActionsMSBuildLogger'
+        ref: 'master'
+        token: ${{ secrets.GH_TOKEN }}
+        path: 'setup-GitHubActionsMSBuildLogger'
+        lfs: 'true'
+    - name: Update setup project
+      if: success() && startsWith(github.ref, 'refs/tags')
+      run: |
+        git config --global user.email "StanleyGoldman@users.noreply.github.com"
+        git config --global user.name "Stanley Goldman"
+        cp -Force "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll" setup-GitHubActionsMSBuildLogger\
+        cd setup-GitHubActionsMSBuildLogger\
+        git add -A
+        git commit -m "Update to v$env:GitVersion_MajorMinorPatch"
+        git tag "v$env:GitVersion_MajorMinorPatch"
+        git push --tags origin master
