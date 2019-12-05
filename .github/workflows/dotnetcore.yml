@@ -18,7 +18,10 @@ jobs:
         # $branchName = $env:GITHUB_REF.Trimstart("refs/heads/")
         # git checkout -b $branchName
         # git reset --hard $env:GITHUB_SHA
+        gci env:* | sort-object name
         dotnet build -c Release .\GitHubActionsMSBuildLogger.sln -v normal -fl -flp:logfile=build.log -flp:verbosity=detailed /logger:GitHubActionsLogger,..\GitHubActionsMSBuildLogger.dll
+        gci env:* | sort-object name
+        
         $env:GitHubActionsMSBuildLogger_LoggerPath = "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll"
         $env:GitHubActionsMSBuildLogger_TestResourcePath = "$pwd\test-resources"
         $env:GitHubActionsMSBuildLogger_MsBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
