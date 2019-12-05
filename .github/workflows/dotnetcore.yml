@@ -15,12 +15,6 @@ jobs:
       with:
         dotnet-version: 3.0.100
     - uses: StanleyGoldman/setup-GitHubActionsMSBuildLogger@master
-    - name: Debug
-      run: |
-        gci env:* | sort-object name
-        .\lib\GitVersion.exe /output json
-        .\lib\GitVersion.exe /output buildserver
-        gci env:* | sort-object name
     - name: Build and Test
       run: |
         dotnet build -c Release .\GitHubActionsMSBuildLogger.sln -v normal -fl -flp:logfile=build.log -flp:verbosity=detailed /logger:GitHubActionsLogger,..\GitHubActionsMSBuildLogger.dll
