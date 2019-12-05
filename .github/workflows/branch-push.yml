@@ -25,11 +25,6 @@ jobs:
         $env:GitHubActionsMSBuildLogger_LoggerPath = "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll"
         $env:GitHubActionsMSBuildLogger_TestResourcePath = "$pwd\test-resources"
         .\test.ps1
-    - name: Tag commit
-      uses: tvdias/github-tagger@v0.0.1
-      with:
-        repo-token: "${{ secrets.GH_TOKEN }}"
-        tag: "${{ format('v{0}', env.GitVersion_SemVer) }}"
     - name: Upload Build Log
       if: always()
       uses: actions/upload-artifact@v1.0.0
