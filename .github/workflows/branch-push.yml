@@ -87,4 +87,11 @@ jobs:
         git add -A
         git commit -m "Update to v$env:GitVersion_MajorMinorPatch"
         git tag "v$env:GitVersion_MajorMinorPatch"
-        git push --tags origin master
+        try {
+            git push --tags origin master
+            Write-Host "Push Successful"
+        }
+        catch {
+            Write-Host "Push Error"
+            exit 1
+        }
