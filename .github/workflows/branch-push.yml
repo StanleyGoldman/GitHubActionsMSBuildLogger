@@ -87,4 +87,4 @@ jobs:
         git add -A
         git commit -m "Update to v$env:GitVersion_MajorMinorPatch"
         git tag "v$env:GitVersion_MajorMinorPatch"
-        git push --tags --porcelain origin master
+        git push --tags origin master 2>&1 | write-host
