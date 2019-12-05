@@ -1,3 +1,9 @@
+<a name="unreleased"></a>
+## [Unreleased]
+
+### Refactor
+- Adding Changelog
+
 <a name="v1.0.23"></a>
 ## [v1.0.23] - 2019-12-05
 
@@ -26,6 +32,7 @@
 ## v1.0.13 - 2019-12-04
 
 
+[Unreleased]: https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.23...HEAD
 [v1.0.23]: https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.22...v1.0.23
 [v1.0.22]: https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.21...v1.0.22
 [v1.0.21]: https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.20...v1.0.21
