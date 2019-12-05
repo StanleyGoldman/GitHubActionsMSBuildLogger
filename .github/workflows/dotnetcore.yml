@@ -4,6 +4,9 @@ on: [push]
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      GitHubActionsLogger_Debug: True
+      GitHubActionsMSBuildLogger_MsBuildPath: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe
     steps:
     - name: Checkout commit
       uses: actions/checkout@v1
@@ -11,16 +14,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
+    - uses: StanleyGoldman/setup-GitHubActionsMSBuildLogger@master
     - name: Build and Test
       run: |
-        git checkout master
-        $branchName = $env:GITHUB_REF.Trimstart("refs/heads/")
-        git checkout -b $branchName
-        git reset --hard $env:GITHUB_SHA
-        .\build.ps1
+        dotnet build -c Release .\GitHubActionsMSBuildLogger.sln -v normal -fl -flp:logfile=build.log -flp:verbosity=detailed /logger:GitHubActionsLogger,..\GitHubActionsMSBuildLogger.dll
         $env:GitHubActionsMSBuildLogger_LoggerPath = "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll"
         $env:GitHubActionsMSBuildLogger_TestResourcePath = "$pwd\test-resources"
-        $env:GitHubActionsMSBuildLogger_MsBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe"
         .\test.ps1
     - name: Upload Build Log
       if: always()
