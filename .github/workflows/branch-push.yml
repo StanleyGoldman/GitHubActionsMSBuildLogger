@@ -62,6 +62,7 @@ jobs:
       with:
         repository: 'StanleyGoldman/setup-GitHubActionsMSBuildLogger'
         ref: 'master'
+        token: ${{ secrets.GH_TOKEN }}:  
         path: 'setup-GitHubActionsMSBuildLogger'
         lfs: 'true'
     - name: Update setup project
