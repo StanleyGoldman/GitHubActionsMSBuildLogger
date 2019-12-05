@@ -22,7 +22,7 @@ jobs:
         $env:GitHubActionsMSBuildLogger_TestResourcePath = "$pwd\test-resources"
         .\test.ps1
     - name: Tag commit
-      uses: tvdias/github-tagger@master
+      uses: tvdias/github-tagger@v0.0.1
       with:
         repo-token: "${{ secrets.GH_TOKEN }}"
         tag: "${{ env.GitVersion_SemVer }}"
