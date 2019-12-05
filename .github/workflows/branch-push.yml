@@ -3,7 +3,6 @@ on:
   push:
     branches:    
     - '*'
-    - '!master'
 jobs:
   build:
     runs-on: windows-latest
@@ -42,3 +41,9 @@ jobs:
       with:
         name: Binaries
         path: src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3
+    - name: Tag commit
+      uses: tvdias/github-tagger@v0.0.1
+      if: success() && github.ref != '/refs/heads/master'
+      with:
+        repo-token: "${{ secrets.GH_TOKEN }}"
+        tag: "${{ format('v{0}', env.GitVersion_SemVer) }}"
