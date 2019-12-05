@@ -13,10 +13,10 @@ jobs:
         dotnet-version: 3.0.100
     - name: Build and Test
       run: |
-        git checkout master
-        $branchName = $env:GITHUB_REF.Trimstart("refs/heads/")
-        git checkout -b $branchName
-        git reset --hard $env:GITHUB_SHA
+        # git checkout master
+        # $branchName = $env:GITHUB_REF.Trimstart("refs/heads/")
+        # git checkout -b $branchName
+        # git reset --hard $env:GITHUB_SHA
         .\build.ps1
         $env:GitHubActionsMSBuildLogger_LoggerPath = "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll"
         $env:GitHubActionsMSBuildLogger_TestResourcePath = "$pwd\test-resources"
