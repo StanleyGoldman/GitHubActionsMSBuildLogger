@@ -1,5 +1,12 @@
+<a name="v1.0.15"></a>
+## [v1.0.15](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.14...v1.0.15) - 2019-12-06
+
+### Pull Requests
+- Merge pull request [#13](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/issues/13) from StanleyGoldman/branch-fix
+
+
 <a name="v1.0.14"></a>
-## [v1.0.14](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.0...v1.0.14) - 2019-12-05
+## [v1.0.14](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.0...v1.0.14) - 2019-12-06
 
 ### Pull Requests
 - Merge pull request [#3](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/issues/3) from StanleyGoldman/debugging
