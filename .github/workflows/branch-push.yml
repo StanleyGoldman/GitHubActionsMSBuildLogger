@@ -60,6 +60,7 @@ jobs:
     - name: Upload Release Asset
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1.0.1
+      if: success() && startsWith(github.ref, 'refs/tags')
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
@@ -79,11 +80,12 @@ jobs:
     - name: Update setup project
       if: success() && startsWith(github.ref, 'refs/tags')
       run: |
+        $env:GIT_REDIRECT_STDERR = '2>&1'
         git config --global user.email "StanleyGoldman@users.noreply.github.com"
         git config --global user.name "Stanley Goldman"
         cp -Force "$pwd\src\GitHubActionsMSBuildLogger\bin\Release\netstandard1.3\GitHubActionsMSBuildLogger.dll" setup-GitHubActionsMSBuildLogger\
         cd setup-GitHubActionsMSBuildLogger\
         git add -A
-        git commit -m "Update to v$env.GitVersion_MajorMinorPatch"
-        git tag "v$env.GitVersion_MajorMinorPatch"
+        git commit -m "Update to v$env:GitVersion_MajorMinorPatch"
+        git tag "v$env:GitVersion_MajorMinorPatch"
         git push --tags origin master
