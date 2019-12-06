@@ -37,6 +37,7 @@ jobs:
     - name: Build
       if: env.SKIP_BUILD != 'true'
       run: |
+        git fetch origin master
         dotnet build -c Release .\GitHubActionsMSBuildLogger.sln -v normal -fl -flp:logfile=build.log -flp:verbosity=detailed /logger:GitHubActionsLogger,..\GitHubActionsMSBuildLogger.dll
     - name: Test
       if: success() && startsWith(github.ref, 'refs/heads') && env.SKIP_BUILD != 'true'
