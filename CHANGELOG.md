@@ -1,3 +1,11 @@
+<a name="v1.0.17"></a>
+## [v1.0.17](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.15...v1.0.17) - 2019-12-06
+
+### Pull Requests
+- Merge pull request [#9](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/issues/9) from StanleyGoldman/dependabot/nuget/Microsoft.NET.Test.Sdk-16.4.0
+- Merge pull request [#11](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/issues/11) from StanleyGoldman/dependabot/nuget/xunit.runner.visualstudio-2.4.1
+
+
 <a name="v1.0.15"></a>
 ## [v1.0.15](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.14...v1.0.15) - 2019-12-06
 
