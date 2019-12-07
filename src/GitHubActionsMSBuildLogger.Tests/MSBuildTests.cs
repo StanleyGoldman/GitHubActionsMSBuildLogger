@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -31,6 +32,11 @@ namespace GitHubActionsMSBuildLogger.Tests
                 await NugetRestoreAsync(slnPath)
                     .ConfigureAwait(false);
             }
+            
+            var processResults = await ProcessEx.RunAsync(new ProcessStartInfo(_msbuildExec, $"-version"))
+                .ConfigureAwait(false);
+
+            _output.WriteLine("msbuild version {0}", processResults.StandardOutput.First());
 
             var processStartInfo =
                 new ProcessStartInfo(_msbuildExec, $"/logger:GitHubActionsLogger,{loggerPath} {slnPath}")

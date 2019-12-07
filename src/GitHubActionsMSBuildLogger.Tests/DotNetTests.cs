@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -28,6 +29,11 @@ namespace GitHubActionsMSBuildLogger.Tests
                 await NugetRestoreAsync(slnPath)
                     .ConfigureAwait(false);
             }
+
+            var processResults = await ProcessEx.RunAsync(new ProcessStartInfo("dotnet", $"--version"))
+                .ConfigureAwait(false);
+
+            _output.WriteLine("dotnet version {0}", processResults.StandardOutput.First());
 
             var processStartInfo =
                 new ProcessStartInfo("dotnet", $"build {slnPath} /logger:GitHubActionsLogger,{loggerPath}")
