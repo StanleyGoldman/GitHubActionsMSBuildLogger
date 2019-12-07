@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using RunProcessAsTask;
 using Xunit;
@@ -92,6 +94,17 @@ namespace GitHubActionsMSBuildLogger.Tests
                 .ToArray();
 
             return (warnings, errors);
+        }
+
+        protected static async Task NugetRestoreAsync(string slnPath)
+        {
+            var nugetProcessStartInfo =
+                new ProcessStartInfo("nuget", $"restore {slnPath}");
+
+            var nugetRestoreResult = await ProcessEx.RunAsync(nugetProcessStartInfo)
+                .ConfigureAwait(false);
+
+            nugetRestoreResult.ExitCode.Should().Be(0);
         }
     }
 }
