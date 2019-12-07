@@ -21,10 +21,16 @@ namespace GitHubActionsMSBuildLogger.Tests
         private readonly ITestOutputHelper _output;
         private readonly string _msbuildExec;
 
-        private async Task<ProcessResults> BuildAsync(string project)
+        private async Task<ProcessResults> BuildAsync(string project, bool nugetRestore = false)
         {
             var loggerPath = GetLoggerPathOrThrow();
             var slnPath = GetSolutionPathOrThrow(project);
+
+            if (nugetRestore)
+            {
+                await NugetRestoreAsync(slnPath)
+                    .ConfigureAwait(false);
+            }
 
             var processStartInfo =
                 new ProcessStartInfo(_msbuildExec, $"/logger:GitHubActionsLogger,{loggerPath} {slnPath}")
@@ -80,24 +86,19 @@ namespace GitHubActionsMSBuildLogger.Tests
         [Fact]
         public async Task TestRoslynator()
         {
-            using var processResults = await BuildAsync("roslynator")
+            using var processResults = await BuildAsync("roslynator", true)
                 .ConfigureAwait(false);
 
             var (warnings, errors) = OutputResults(processResults, _output);
 
             using (new AssertionScope())
             {
-                processResults.ExitCode.Should().Be(1);
+                processResults.ExitCode.Should().Be(0);
 
-                warnings.Should().BeEmpty();
-                errors.Should().BeEquivalentTo(
-                    @"::error file=TestConsoleApp1/CSC,line=0,col=0::CS0006 Metadata file '..\packages\Roslynator.Analyzers.1.9.0\analyzers\dotnet\cs\Roslynator.Common.dll' could not be found",
-                    @"::error file=TestConsoleApp1/CSC,line=0,col=0::CS0006 Metadata file '..\packages\Roslynator.Analyzers.1.9.0\analyzers\dotnet\cs\Roslynator.Common.Workspaces.dll' could not be found",
-                    @"::error file=TestConsoleApp1/CSC,line=0,col=0::CS0006 Metadata file '..\packages\Roslynator.Analyzers.1.9.0\analyzers\dotnet\cs\Roslynator.CSharp.Analyzers.CodeFixes.dll' could not be found",
-                    @"::error file=TestConsoleApp1/CSC,line=0,col=0::CS0006 Metadata file '..\packages\Roslynator.Analyzers.1.9.0\analyzers\dotnet\cs\Roslynator.CSharp.Analyzers.dll' could not be found",
-                    @"::error file=TestConsoleApp1/CSC,line=0,col=0::CS0006 Metadata file '..\packages\Roslynator.Analyzers.1.9.0\analyzers\dotnet\cs\Roslynator.CSharp.dll' could not be found",
-                    @"::error file=TestConsoleApp1/CSC,line=0,col=0::CS0006 Metadata file '..\packages\Roslynator.Analyzers.1.9.0\analyzers\dotnet\cs\Roslynator.CSharp.Workspaces.dll' could not be found"
+                warnings.Should().BeEquivalentTo(
+                    @"::warning file=TestConsoleApp1/Program.cs,line=9,col=0::RCS1102 Make class static.", "::warning file=TestConsoleApp1/Program.cs,line=16,col=0::RCS1102 Make class static."
                 );
+                errors.Should().BeEmpty();
             }
         }
 
