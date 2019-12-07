@@ -1,3 +1,13 @@
+<a name="v1.0.18"></a>
+## [v1.0.18](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.17...v1.0.18) - 2019-12-07
+### Refactor
+- Adding functionality for tests to run nuget
+
+
+### Pull Requests
+- Merge pull request [#14](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/issues/14) from StanleyGoldman/fixing-roslynator
+
+
 <a name="v1.0.17"></a>
 ## [v1.0.17](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.15...v1.0.17) - 2019-12-06
 
