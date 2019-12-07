@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHubActionsMSBuildLogger.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9246B2CC-3426-4C25-B255-AD7A609AC5D5}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\branch-push.yml = .github\workflows\branch-push.yml
+		.github\workflows\branch-tag-push.yml = .github\workflows\branch-tag-push.yml
 		build.ps1 = build.ps1
 		.chglog\CHANGELOG.tpl.md = .chglog\CHANGELOG.tpl.md
 		clean.ps1 = clean.ps1
