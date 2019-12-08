@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -28,6 +29,11 @@ namespace GitHubActionsMSBuildLogger.Tests
                 await NugetRestoreAsync(slnPath)
                     .ConfigureAwait(false);
             }
+
+            var processResults = await ProcessEx.RunAsync(new ProcessStartInfo("dotnet", $"--version"))
+                .ConfigureAwait(false);
+
+            _output.WriteLine("dotnet version {0}", processResults.StandardOutput.First());
 
             var processStartInfo =
                 new ProcessStartInfo("dotnet", $"build {slnPath} /logger:GitHubActionsLogger,{loggerPath}")
@@ -63,16 +69,21 @@ namespace GitHubActionsMSBuildLogger.Tests
         [Fact]
         public async Task TestRoslynCodeAnalysis()
         {
-            using var processResults = await BuildAsync("roslyn-codeanalysis")
+            using var processResults = await BuildAsync("roslyn-codeanalysis", true)
                 .ConfigureAwait(false);
 
             var (warnings, errors) = OutputResults(processResults, _output);
 
             using (new AssertionScope())
             {
-                processResults.ExitCode.Should().Be(1);
+                processResults.ExitCode.Should().Be(0);
 
-                warnings.Should().BeEmpty();
+                warnings.Should().BeEquivalentTo(
+                    @"::warning file=TestConsoleApp1/Program.cs,line=15,col=0::CA1812 Program.MyClass is an internal class that is apparently never instantiated. If so, remove the code from the assembly. If this class is intended to contain only static members, make it static (Shared in Visual Basic).",
+                    @"::warning file=TestConsoleApp1/Program.cs,line=11,col=0::CA1801 Parameter args of method Main is never used. Remove the parameter or use it in the method body.",
+                    @"::warning file=TestConsoleApp1/Program.cs,line=17,col=0::CA1823 Unused field '_inner'.",
+                    @"::warning file=TestConsoleApp1/Program.cs,line=17,col=0::CA2213 'MyClass' contains field '_inner' that is of IDisposable type 'MyOTherClass', but it is never disposed. Change the Dispose method on 'MyClass' to call Close or Dispose on this field."
+                );
                 errors.Should().BeEmpty();
             }
         }
