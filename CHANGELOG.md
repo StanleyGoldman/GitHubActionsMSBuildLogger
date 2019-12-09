@@ -1,3 +1,10 @@
+<a name="v1.0.21"></a>
+## [v1.0.21](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.20...v1.0.21) - 2019-12-09
+
+### Pull Requests
+- Merge pull request [#18](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/issues/18) from StanleyGoldman/add-license
+
+
 <a name="v1.0.20"></a>
 ## [v1.0.20](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.19...v1.0.20) - 2019-12-09
 ### Refactor
