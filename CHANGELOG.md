@@ -1,3 +1,13 @@
+<a name="v1.0.20"></a>
+## [v1.0.20](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.19...v1.0.20) - 2019-12-09
+### Refactor
+- Adding the build version to the log output
+
+
+### Pull Requests
+- Merge pull request [#16](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/issues/16) from StanleyGoldman/version-output
+
+
 <a name="v1.0.19"></a>
 ## [v1.0.19](https://github.com/StanleyGoldman/GitHubActionsMSBuildLogger/compare/v1.0.18...v1.0.19) - 2019-12-08
 ### Refactor
